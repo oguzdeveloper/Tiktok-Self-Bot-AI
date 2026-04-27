@@ -1,0 +1,37 @@
+{
+  "manifest_version": 2,
+  "name": "TikTok Self Bot - AI Auto Reply",
+  "version": "1.0.0",
+  "description": "AI-powered auto-reply for TikTok DMs. Supports EN/TR and custom prompts.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabs",
+    "webRequest",
+    "*://*.tiktok.com/*",
+    "*://*.fireworks.ai/*"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.tiktok.com/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "48": "icons/icon48.svg",
+      "96": "icons/icon96.svg"
+    }
+  },
+  "icons": {
+    "48": "icons/icon48.svg",
+    "96": "icons/icon96.svg"
+  }
+}

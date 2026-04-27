@@ -1,0 +1,21 @@
+# API keys & secrets
+*.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Packages
+node_modules/
+web-ext-artifacts/
+
+# Logs
+*.log

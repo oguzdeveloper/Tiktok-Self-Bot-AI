@@ -130,3 +130,9 @@ tiktok-ai-auto-reply/
 ---
 
 <p align="center">Made with ☕ + 🤖</p>
+
+---
+
+## 📬 İletişim
+
+- TikTok: [@ogquzz](https://www.tiktok.com/@ogquzz)

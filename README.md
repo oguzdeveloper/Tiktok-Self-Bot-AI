@@ -1,11 +1,11 @@
 # 🤖 TikTok AI Auto Reply
 
 > **AI-powered Firefox extension that automatically replies to TikTok DMs.**
-> <br>**Fireworks AI tabanlı Firefox eklentisi — TikTok DM'lerine otomatik AI cevapları.**
+> <br>**OpenAI-uyumlu API ile çalışan Firefox eklentisi — TikTok DM'lerine otomatik AI cevapları.**
 
 [![Firefox](https://img.shields.io/badge/Firefox-Compatible-orange?logo=firefox)](https://www.mozilla.org/firefox/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![AI](https://img.shields.io/badge/AI-Llama%203.3%2070B-purple)](https://fireworks.ai)
+[![AI](https://img.shields.io/badge/AI-OpenAI%20compatible-blue)](https://platform.openai.com/docs/api-reference/chat)
 
 ---
 
@@ -13,7 +13,7 @@
 
 ### Overview
 
-TikTok AI Auto Reply is a browser extension that listens to incoming TikTok DMs and generates smart, contextual replies using **Llama 3.3 70B Instruct** via [Fireworks AI](https://fireworks.ai).
+TikTok AI Auto Reply is a browser extension that listens to incoming TikTok DMs and generates smart, contextual replies using any **OpenAI-compatible API** (OpenAI, OpenRouter, Fireworks, or a local model).
 
 ### Features
 
@@ -26,17 +26,19 @@ TikTok AI Auto Reply is a browser extension that listens to incoming TikTok DMs 
 
 ### Installation
 
-1. Get your **Fireworks AI API Key** from [fireworks.ai/api-keys](https://fireworks.ai/api-keys)
+1. Get an **API key** from any OpenAI-compatible provider (e.g. [OpenAI](https://platform.openai.com/api-keys), [OpenRouter](https://openrouter.ai/keys), [Fireworks AI](https://fireworks.ai/api-keys))
 2. Open Firefox and go to `about:debugging`
 3. Click **"This Firefox"** → **"Load Temporary Add-on"**
 4. Select the `manifest.json` file from this folder
-5. Click the extension icon in the toolbar, paste your API key, and hit **Save**
+5. Click the extension icon in the toolbar, paste your API key, set the **API Base URL** and **Model** (or leave the defaults for OpenAI), and hit **Save**
 
 ### Settings
 
 | Setting | Description | Default |
 |---------|-------------|---------|
-| **API Key** | Your Fireworks AI API key | — |
+| **API Key** | Your OpenAI-compatible API key | — |
+| **API Base URL** | Provider endpoint (OpenAI format) | `https://api.openai.com/v1` |
+| **Model** | Free-text model name | `gpt-4o-mini` |
 | **Language** | `EN` / `TR` / `Custom` | `EN` |
 | **Custom Prompt** | Your own system prompt (when Language = Custom) | — |
 | **Reply Delay** | Milliseconds before sending a reply | `1200` |
@@ -48,7 +50,7 @@ TikTok AI Auto Reply is a browser extension that listens to incoming TikTok DMs 
 
 ### Genel Bakış
 
-TikTok AI Auto Reply, gelen TikTok DM'lerini dinleyen ve **Llama 3.3 70B Instruct** modeli ile [Fireworks AI](https://fireworks.ai) üzerinden akıllı, bağlamsal cevaplar üreten bir tarayıcı eklentisidir.
+TikTok AI Auto Reply, gelen TikTok DM'lerini dinleyen ve herhangi bir **OpenAI-uyumlu API** (OpenAI, OpenRouter, Fireworks veya yerel bir model) üzerinden akıllı, bağlamsal cevaplar üreten bir tarayıcı eklentisidir.
 
 ### Özellikler
 
@@ -61,17 +63,19 @@ TikTok AI Auto Reply, gelen TikTok DM'lerini dinleyen ve **Llama 3.3 70B Instruc
 
 ### Kurulum
 
-1. [Fireworks AI](https://fireworks.ai/api-keys) üzerinden ücretsiz **API Key** al
+1. Herhangi bir OpenAI-uyumlu sağlayıcıdan **API Key** al (ör. [OpenAI](https://platform.openai.com/api-keys), [OpenRouter](https://openrouter.ai/keys), [Fireworks AI](https://fireworks.ai/api-keys))
 2. Firefox'ta `about:debugging` adresine git
 3. **"Bu Firefox"** → **"Geçici Eklenti Yükle"** butonuna tıkla
 4. Bu klasördeki `manifest.json` dosyasını seç
-5. Araç çubuğundaki eklenti ikonuna tıkla, API Key'i yapıştır ve **Kaydet**
+5. Araç çubuğundaki eklenti ikonuna tıkla, API Key'i yapıştır, **API Base URL** ve **Model**'i gir (OpenAI için varsayılanları bırakabilirsin) ve **Kaydet**
 
 ### Ayarlar
 
 | Ayar | Açıklama | Varsayılan |
 |------|----------|------------|
-| **API Key** | Fireworks AI API anahtarın | — |
+| **API Key** | OpenAI-uyumlu API anahtarın | — |
+| **API Base URL** | Sağlayıcı adresi (OpenAI formatı) | `https://api.openai.com/v1` |
+| **Model** | Serbest metin model adı | `gpt-4o-mini` |
 | **Dil** | `EN` / `TR` / `Özel` | `EN` |
 | **Özel Prompt** | Kendi sistem promptun (Dil = Özel ise) | — |
 | **Cevap Gecikmesi** | Cevap öncesi bekleme süresi (ms) | `1200` |
@@ -109,7 +113,7 @@ tiktok-ai-auto-reply/
 
 ## 🛡️ Security / Güvenlik
 
-- **API keys are stored locally** in browser storage — never sent anywhere except Fireworks AI
+- **API keys are stored locally** in browser storage — never sent anywhere except the API base URL you configured
 - **No TikTok credentials are collected**
 - **No third-party analytics or tracking**
 

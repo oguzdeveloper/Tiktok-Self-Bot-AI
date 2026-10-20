@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const statusText = document.getElementById('statusText');
 
   const apiKeyInput = document.getElementById('apiKeyInput');
+  const apiBaseUrlInput = document.getElementById('apiBaseUrlInput');
+  const modelInput = document.getElementById('modelInput');
   const toggleApiKeyVisibility = document.getElementById('toggleApiKeyVisibility');
   const languageSelect = document.getElementById('languageSelect');
   const customPromptGroup = document.getElementById('customPromptGroup');
@@ -33,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
             updateStatus(response.autoReplyEnabled !== false);
 
             if (response.apiKey) apiKeyInput.value = response.apiKey;
+            if (response.apiBaseUrl) apiBaseUrlInput.value = response.apiBaseUrl;
+            if (response.model) modelInput.value = response.model;
             if (response.language) languageSelect.value = response.language;
             if (response.customPrompt) customPromptInput.value = response.customPrompt;
             if (response.replyDelay !== undefined) replyDelayInput.value = response.replyDelay;
@@ -103,6 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
   saveSettingsBtn.addEventListener('click', () => {
     const settings = {
       apiKey: apiKeyInput.value.trim(),
+      apiBaseUrl: apiBaseUrlInput.value.trim(),
+      model: modelInput.value.trim(),
       language: languageSelect.value,
       customPrompt: customPromptInput.value.trim(),
       replyDelay: parseInt(replyDelayInput.value, 10) || 1200,
@@ -145,6 +151,8 @@ document.addEventListener('DOMContentLoaded', () => {
       settings: {
         autoReplyEnabled: newState,
         apiKey: apiKeyInput.value.trim(),
+        apiBaseUrl: apiBaseUrlInput.value.trim(),
+        model: modelInput.value.trim(),
         language: languageSelect.value,
         customPrompt: customPromptInput.value.trim(),
         replyDelay: parseInt(replyDelayInput.value, 10) || 1200

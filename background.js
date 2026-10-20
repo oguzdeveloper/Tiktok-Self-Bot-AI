@@ -4,10 +4,18 @@ console.log('Background script baslatiliyor...');
 // Chrome / Firefox uyumluluğu
 const browserAPI = (typeof browser !== 'undefined') ? browser : chrome;
 
-// Model - Llama 3.3 70B Instruct (Meta) - instruction-follower serverless model
-// Saf instruction-follower (thinking/MoE degil) -> reasoning leak SIFIR.
-const FIREWORKS_MODEL = 'accounts/fireworks/models/llama-v3p3-70b-instruct';
-const FIREWORKS_API_URL = 'https://api.fireworks.ai/inference/v1/chat/completions';
+// OpenAI-compatible API client
+// Herhangi bir OpenAI formatini destekleyen saglayiciyla calisir:
+// OpenAI, OpenRouter, Fireworks, yerel modeller (Ollama / vLLM / LM Studio) vb.
+// baseURL + model popup ayar ekranindan yapilandirilir.
+const DEFAULT_API_BASE_URL = 'https://api.openai.com/v1';
+const DEFAULT_MODEL = 'gpt-4o-mini';
+
+// POST edilecek URL: {baseURL}/chat/completions (OpenAI standardi)
+function buildChatCompletionsUrl(baseUrl) {
+  var base = (baseUrl || DEFAULT_API_BASE_URL).trim().replace(/\/+$/, '');
+  return base + '/chat/completions';
+}
 
 // Meta-commentary / reasoning leak detection
 // Relaxed filtering - only catches real reasoning leaks:
@@ -181,8 +189,8 @@ function detectRepetition(currentMessage, history) {
   return 0;
 }
 
-// Session affinity key - ayni sohbetin trafigi ayni replica'ya yonlensin
-// boylece prompt cache hit orani maximize olsun (Fireworks docs: x-session-affinity)
+// Session key - OpenAI `user` alaninda kullanilir: ayni sohbetin trafigi
+// saglayici tarafinda tutarli yonlendirilir / atfedilir.
 function buildSessionKey(senderName, isGroup) {
   var base = (senderName && senderName !== 'unknown') ? senderName : 'anon';
   // Adi ASCII'ye sadelestir, header-safe yap
@@ -190,11 +198,15 @@ function buildSessionKey(senderName, isGroup) {
   return (isGroup ? 'g_' : 'd_') + base;
 }
 
-// Read API key from storage
-function getApiKey() {
+// Read API settings from storage (OpenAI-compatible provider config)
+function getApiSettings() {
   return new Promise(function (resolve) {
-    browserAPI.storage.local.get(['apiKey'], function(result) {
-      resolve(result.apiKey || '');
+    browserAPI.storage.local.get(['apiKey', 'apiBaseUrl', 'model'], function(result) {
+      resolve({
+        apiKey: result.apiKey || '',
+        apiBaseUrl: result.apiBaseUrl || DEFAULT_API_BASE_URL,
+        model: result.model || DEFAULT_MODEL
+      });
     });
   });
 }
@@ -225,9 +237,10 @@ function getSystemPrompt(settings) {
     'Do not list rules or instructions, do not reason out loud, just reply naturally.';
 }
 
-// AI call
-async function callFireworksAI(userMessage, history, senderName, isGroup, userProfile) {
-  var apiKey = await getApiKey();
+// AI call - OpenAI-compatible chat completions
+async function callOpenAICompatibleAI(userMessage, history, senderName, isGroup, userProfile) {
+  var apiSettings = await getApiSettings();
+  var apiKey = apiSettings.apiKey;
 
   if (!apiKey) {
     return { error: 'API anahtari yok' };
@@ -287,16 +300,14 @@ async function callFireworksAI(userMessage, history, senderName, isGroup, userPr
       msgsToSend.splice(msgsToSend.length - 1, 0, { role: 'system', content: extraSystemNote });
     }
     
-    var response = await fetch(FIREWORKS_API_URL, {
+    var response = await fetch(buildChatCompletionsUrl(apiSettings.apiBaseUrl), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + apiKey,
-        // Sticky routing - ayni session ayni replica'ya gitsin (cache hit max)
-        'x-session-affinity': sessionKey
+        'Authorization': 'Bearer ' + apiKey
       },
       body: JSON.stringify({
-        model: FIREWORKS_MODEL,
+        model: apiSettings.model,
         messages: msgsToSend,
         // Yeni karakter uzun cevap verebilir (tavsiye, aciklama) - 350 token yeterli
         max_tokens: 350,
@@ -408,7 +419,7 @@ browserAPI.runtime.onMessage.addListener(function (message, sender, sendResponse
   console.log('Mesaj alindi:', message.type);
 
   if (message.type === 'GENERATE_RESPONSE') {
-    callFireworksAI(message.userMessage, message.conversationHistory, message.senderName, message.isGroup, message.userProfile)
+    callOpenAICompatibleAI(message.userMessage, message.conversationHistory, message.senderName, message.isGroup, message.userProfile)
       .then(function (result) {
         sendResponse(result);
       })
@@ -420,9 +431,11 @@ browserAPI.runtime.onMessage.addListener(function (message, sender, sendResponse
 
   if (message.type === 'GET_SETTINGS') {
     try {
-      var storageResult = browserAPI.storage.local.get(['autoReplyEnabled', 'apiKey', 'language', 'customPrompt', 'replyDelay'], function(result) {
+      var storageResult = browserAPI.storage.local.get(['autoReplyEnabled', 'apiKey', 'apiBaseUrl', 'model', 'language', 'customPrompt', 'replyDelay'], function(result) {
         sendResponse({
           apiKey: result.apiKey || '',
+          apiBaseUrl: result.apiBaseUrl || DEFAULT_API_BASE_URL,
+          model: result.model || DEFAULT_MODEL,
           autoReplyEnabled: result.autoReplyEnabled !== false,
           language: result.language || 'en',
           customPrompt: result.customPrompt || '',

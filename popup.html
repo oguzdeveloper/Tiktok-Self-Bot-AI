@@ -31,14 +31,28 @@
 
         <!-- API Key -->
         <div class="input-group">
-          <label for="apiKeyInput">Fireworks AI API Key</label>
+          <label for="apiKeyInput">API Key (OpenAI-compatible)</label>
           <div class="input-wrapper">
-            <input type="password" id="apiKeyInput" placeholder="fw_..." autocomplete="off">
+            <input type="password" id="apiKeyInput" placeholder="sk-..." autocomplete="off">
             <button class="toggle-visibility" id="toggleApiKeyVisibility" type="button" title="Show / Hide">
               <svg class="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg>
             </button>
           </div>
-          <span class="hint"><a href="https://fireworks.ai/api-keys" target="_blank">Get your API key</a></span>
+          <span class="hint">Any OpenAI-compatible provider: OpenAI, OpenRouter, Fireworks, or a local model (Ollama / vLLM).</span>
+        </div>
+
+        <!-- API Base URL -->
+        <div class="input-group">
+          <label for="apiBaseUrlInput">API Base URL</label>
+          <input type="text" id="apiBaseUrlInput" placeholder="https://api.openai.com/v1" autocomplete="off" spellcheck="false">
+          <span class="hint">e.g. https://api.openai.com/v1, https://openrouter.ai/api/v1, https://api.fireworks.ai/inference/v1, http://localhost:11434/v1</span>
+        </div>
+
+        <!-- Model -->
+        <div class="input-group">
+          <label for="modelInput">Model</label>
+          <input type="text" id="modelInput" placeholder="gpt-4o-mini" autocomplete="off" spellcheck="false">
+          <span class="hint">Free text — any model name your provider supports.</span>
         </div>
 
         <!-- Language -->

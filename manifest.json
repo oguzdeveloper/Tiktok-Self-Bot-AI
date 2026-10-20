@@ -9,7 +9,7 @@
     "tabs",
     "webRequest",
     "*://*.tiktok.com/*",
-    "*://*.fireworks.ai/*"
+    "*://*/*"
   ],
   "background": {
     "scripts": ["background.js"],
